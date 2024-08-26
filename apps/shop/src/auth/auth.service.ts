@@ -84,7 +84,8 @@ export class AuthService extends BaseRepository {
     }
     // generate session
     const session = await this.generateSession(req, user.id);
-
+    // TODO: Save Refresh Token In Cookies
+    // CODE HERE
     // generate token
     const payload = { id: user.id, name: user.name, role: user.role };
     const accessToken = this.jwtService.generate(payload, session.secretKey);
@@ -98,11 +99,12 @@ export class AuthService extends BaseRepository {
     });
 
     if (!user || !this.cryptoService.verify(dto.password, user?.password))
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Thông tin xác thực thất bại');
 
     // generate session
     const session = await this.generateSession(req, user.id);
-
+    // TODO: Save Refresh Token In Cookies
+    // CODE HERE
     // generate token
     const payload = { id: user.id, name: user.name, role: user.role };
     const accessToken = this.jwtService.generate(payload, session.secretKey);

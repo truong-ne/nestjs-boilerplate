@@ -6,6 +6,7 @@ import {
   Get,
   Ip,
   Param,
+  Patch,
   Post,
   Req,
   Search,
@@ -28,6 +29,7 @@ import { UserAuthGuard } from '@lib/utils/middlewares/guards/user.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiOperation({ summary: 'User Profile' })
   @UseGuards(UserAuthGuard)
   @ApiBearerAuth()
   @Get('profile')
@@ -43,7 +45,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'User Login' })
   @Post('login')
-  async login(@Body() dto: LoginDto, @Req() req, @Ip() ip) {
+  async login(@Body() dto: LoginDto, @Req() req, @Ip() ip: string) {
     const session: ISession = { userAgent: req.get('user-agent'), ip };
 
     return await this.authService.login(dto, session);
@@ -58,14 +60,33 @@ export class AuthController {
     return await this.authService.socialLogin(user, session);
   }
 
+  @ApiOperation({ summary: 'Generate New Access, Refresh Token' })
+  @Patch('refresh')
+  async generateNewToken() {
+    // TODO: Generate New secretKey
+    // CODE HERE
+    return;
+  }
+
+  @ApiOperation({ summary: 'User Logout' })
+  @Delete('logout')
+  async logout() {
+    // TODO: Delete Session By Refresh Token
+    // CODE HERE
+    return;
+  }
+
   @ApiOperation({ summary: 'Terminate All Sessions' })
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth()
   @Delete('session')
-  async terminateAllSessions(@UserDecorator() user) {
+  async terminateAllSessions(@UserDecorator() user: IUserJwtPayload) {
     return await this.authService.terminateAllSessions(user.id);
   }
 
   @ApiOperation({ summary: 'Terminate Session' })
   @UseGuards(UserAuthGuard)
+  @ApiBearerAuth()
   @Delete('session/:id')
   async terminateSession(
     @Param('id') id: string,
