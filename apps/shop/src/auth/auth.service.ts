@@ -15,9 +15,11 @@ import {
   IAuthSocialPayload,
   IJwtPayload,
   ISession,
+  IUserJwtPayload,
 } from '@lib/common/interfaces';
 import { DateDigit } from '@lib/common/enums';
 import { CacheService } from '@lib/modules/caching';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService extends BaseRepository {
@@ -83,14 +85,16 @@ export class AuthService extends BaseRepository {
       user = await this.create(this.dataSourcePostgres, User, newUser);
     }
     // generate session
-    const session = await this.generateSession(req, user.id);
-    // TODO: Save Refresh Token In Cookies
-    // CODE HERE
+    const [session, payload]: [Session, IUserJwtPayload] = [
+      await this.generateSession(req, user.id),
+      { id: user.id, name: user.name, role: user.role },
+    ];
+
+    const { refreshToken } = session;
     // generate token
-    const payload = { id: user.id, name: user.name, role: user.role };
     const accessToken = this.jwtService.generate(payload, session.secretKey);
 
-    return { user: payload, accessToken };
+    return { user: payload, accessToken, refreshToken };
   }
 
   async login(dto: LoginDto, req: ISession) {
@@ -102,14 +106,45 @@ export class AuthService extends BaseRepository {
       throw new UnauthorizedException('Thông tin xác thực thất bại');
 
     // generate session
-    const session = await this.generateSession(req, user.id);
-    // TODO: Save Refresh Token In Cookies
-    // CODE HERE
+    const [session, payload]: [Session, IUserJwtPayload] = [
+      await this.generateSession(req, user.id),
+      { id: user.id, name: user.name, role: user.role },
+    ];
+
+    const { refreshToken } = session;
     // generate token
-    const payload = { id: user.id, name: user.name, role: user.role };
     const accessToken = this.jwtService.generate(payload, session.secretKey);
 
-    return { user: payload, accessToken };
+    return { user: payload, accessToken, refreshToken };
+  }
+
+  async refreshToken(
+    session: ISession,
+    refreshToken: string,
+    user: IUserJwtPayload,
+  ) {
+    await this.delete(this.dataSourcePostgres, Session, {
+      refreshToken,
+      user: { id: user },
+    });
+
+    const [newSession, payload]: [Session, IUserJwtPayload] = [
+      await this.generateSession(session, user.id),
+      { id: user.id, name: user.name, role: user.role },
+    ];
+
+    const accessToken = this.jwtService.generate(payload, newSession.secretKey);
+    return { accessToken, refreshToken: newSession.refreshToken };
+  }
+
+  async logout(session: ISession, user: string) {
+    Object.assign(session, { user: { id: user } });
+
+    this.cacheService.delete(
+      `login:${user}:${session.userAgent}-${session.ip}`,
+    );
+
+    return await this.delete(this.dataSourcePostgres, Session, session);
   }
 
   async terminateSession(session: string, user: string): Promise<boolean> {

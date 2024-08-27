@@ -12,19 +12,20 @@ export enum ERole {
 
 export enum EDiscountUnit {
   Percent = '%',
-  VND = 'VND'
+  VND = 'VND',
 }
 
 export enum EDiscountType {
   Limit = 'Limit',
-  Infinity = 'Infinity'
+  Infinity = 'Infinity',
+  OnlyUser = 'OnlyUser',
 }
 
 export enum EDiscountStatus {
   Active = 'Active',
   InActive = 'InActive',
   Expired = 'Expired',
-  OutOfStock = 'OutOfStock'
+  OutOfStock = 'OutOfStock',
 }
 
 export enum EBillStatus {
@@ -33,16 +34,16 @@ export enum EBillStatus {
   InProgress = 'InProgress',
   Finish = 'Finish',
   Cancel = 'Cancel',
-  Denied = 'Denied'
+  Denied = 'Denied',
 }
 
 export enum EBillMethod {
   COD = 'COD',
-  Momo = 'Momo'
+  Momo = 'Momo',
 }
 
 export enum EDeliveryUnit {
   Shopee = 'Shopee',
   Grab = 'Grab',
-  Lalamove = 'Lalamove'
+  Lalamove = 'Lalamove',
 }

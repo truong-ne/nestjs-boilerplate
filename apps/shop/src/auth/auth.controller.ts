@@ -61,19 +61,26 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Generate New Access, Refresh Token' })
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth()
   @Patch('refresh')
-  async generateNewToken() {
-    // TODO: Generate New secretKey
-    // CODE HERE
-    return;
+  async generateNewToken(@Req() req, @UserDecorator() user: IUserJwtPayload) {
+    const [refreshToken, session]: [string, ISession] = [
+      req.cookies?.rf,
+      { userAgent: req.get('user-agent'), ip: req.ip },
+    ];
+
+    return await this.authService.refreshToken(session, refreshToken, user);
   }
 
   @ApiOperation({ summary: 'User Logout' })
+  @UseGuards(UserAuthGuard)
+  @ApiBearerAuth()
   @Delete('logout')
-  async logout() {
-    // TODO: Delete Session By Refresh Token
-    // CODE HERE
-    return;
+  async logout(@Req() req, @UserDecorator() user: IUserJwtPayload) {
+    const session: ISession = { userAgent: req.get('user-agent'), ip: req.ip };
+
+    return await this.authService.logout(session, user.id);
   }
 
   @ApiOperation({ summary: 'Terminate All Sessions' })
