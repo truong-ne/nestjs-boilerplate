@@ -6,8 +6,10 @@ import { LoggerModule } from '@lib/modules';
 import { DatabaseModule } from '@lib/core/databases';
 import { dbConfig } from '@lib/common';
 import { CacheModule } from '@lib/modules/caching';
+import { UserModule } from './user';
+import { UserJwtStrategy } from '@lib/utils/middlewares/strategy';
 
-const modules = [AuthModule, LoggerModule, CacheModule];
+const modules = [AuthModule, UserModule, LoggerModule, CacheModule];
 
 @Module({
   imports: [
@@ -24,5 +26,6 @@ const modules = [AuthModule, LoggerModule, CacheModule];
     }),
     ...modules,
   ],
+  providers: [UserJwtStrategy],
 })
 export class AppModule {}

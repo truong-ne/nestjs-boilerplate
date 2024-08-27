@@ -29,14 +29,6 @@ import { UserAuthGuard } from '@lib/utils/middlewares/guards/user.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @ApiOperation({ summary: 'User Profile' })
-  @UseGuards(UserAuthGuard)
-  @ApiBearerAuth()
-  @Get('profile')
-  async get(@UserDecorator() user: IUserJwtPayload) {
-    return await this.authService.userProfile(user.id);
-  }
-
   @ApiOperation({ summary: 'User Register Account' })
   @Post('register')
   async userRegister(@Body() dto: UserRegisterDto) {

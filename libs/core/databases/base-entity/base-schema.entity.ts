@@ -1,5 +1,6 @@
 import {
   CreateDateColumn,
+  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +15,6 @@ export class BaseSchemaEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt?: Date;
 
-  // @DeleteDateColumn({ type: 'timestamp', nullable: true, default: null })
-  // deletedAt?: Date;
+  @DeleteDateColumn({ type: 'timestamp', nullable: true, default: null })
+  deletedAt?: Date;
 }

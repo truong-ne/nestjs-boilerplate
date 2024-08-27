@@ -19,7 +19,6 @@ import {
 } from '@lib/common/interfaces';
 import { DateDigit } from '@lib/common/enums';
 import { CacheService } from '@lib/modules/caching';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class AuthService extends BaseRepository {
@@ -36,26 +35,6 @@ export class AuthService extends BaseRepository {
     super();
     this.logger = logger;
     this.logger.setContext(this.serviceName);
-  }
-
-  async userProfile(id: string): Promise<User> {
-    const user = await this.dataSourcePostgres
-      .createQueryBuilder(User, 'user')
-      .select([
-        'user.id',
-        'user.avatar',
-        'user.name',
-        'user.email',
-        'user.phone',
-        'user.gender',
-        'user.role',
-        'user.birthday',
-        'user.point',
-        'user.notifications',
-      ])
-      .getOne();
-
-    return user;
   }
 
   async userRegister(payload: UserRegisterDto): Promise<Boolean> {
@@ -190,17 +169,12 @@ export class AuthService extends BaseRepository {
 
   private async existedUser(email: string, phone: string): Promise<void> {
     // email existed ?
-    const emailExisted = await this.exist(this.dataSourcePostgres, User, {
-      where: { email: email },
+    const accountExisted = await this.getOne(this.dataSourcePostgres, User, {
+      where: [{ email: email }, { phone: phone }],
     });
-    if (emailExisted)
+    if (accountExisted?.email === email)
       throw new ConflictException(`Email ${email} đã được đăng kí`);
-
-    // phone existed ?
-    const phoneExisted = await this.exist(this.dataSourcePostgres, User, {
-      where: { phone: phone },
-    });
-    if (phoneExisted)
+    if (accountExisted?.phone === phone)
       throw new ConflictException(`Số điện thoại ${phone} đã được đăng kí`);
   }
 }
