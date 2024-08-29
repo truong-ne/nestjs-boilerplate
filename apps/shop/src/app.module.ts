@@ -7,9 +7,17 @@ import { DatabaseModule } from '@lib/core/databases';
 import { dbConfig } from '@lib/common';
 import { CacheModule } from '@lib/modules/caching';
 import { UserModule } from './user';
-import { UserJwtStrategy } from '@lib/utils/middlewares/strategy';
+import { DiscountModule } from './discount';
+import { CategoryModule } from './category';
 
-const modules = [AuthModule, UserModule, LoggerModule, CacheModule];
+const modules = [
+  AuthModule,
+  UserModule,
+  DiscountModule,
+  CategoryModule,
+  LoggerModule,
+  CacheModule,
+];
 
 @Module({
   imports: [
@@ -26,6 +34,5 @@ const modules = [AuthModule, UserModule, LoggerModule, CacheModule];
     }),
     ...modules,
   ],
-  providers: [UserJwtStrategy],
 })
 export class AppModule {}

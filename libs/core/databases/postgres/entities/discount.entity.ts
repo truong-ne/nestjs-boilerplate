@@ -13,7 +13,7 @@ export class Discount extends BaseSchemaEntity {
   @Column({ length: 50, nullable: false })
   label: string;
 
-  @Column({ length: 20, nullable: false })
+  @Column({ length: 20, nullable: false, unique: true })
   code: string;
 
   @Column({ type: 'integer', nullable: false })

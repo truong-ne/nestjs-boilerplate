@@ -6,20 +6,25 @@ export const config = {
   db: {
     postgres: {
       type: 'postgres',
-      synchronize: false,
-      logging: process.env.NODE_ENV !== 'develop' ? true : false,
+      synchronize: true,
+      logging: process.env.NODE_ENV === 'develop' ? true : false,
       host: process.env.DB_HOST || '127.0.0.1',
       port: process.env.DB_PORT || 5432,
       username: process.env.DB_USER || 'username',
       password: process.env.DB_PWD || 'password',
       database: process.env.DB_NAME || 'db_name',
+      ssl: true,
       extra: {
-        connectionLimit: 10,
+        ssl: {
+          rejectUnauthorized: false,
+          ca: process.env.DB_CA,
+        },
       },
       autoLoadEntities: true,
     },
   },
   cache: {
+    username: process.env.REDIS_USER || 'username',
     password: process.env.REDIS_PWD || 'password',
     socket: {
       port: process.env.REDIS_PORT || 6379,

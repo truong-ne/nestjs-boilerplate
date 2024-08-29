@@ -10,15 +10,19 @@ export const config = {
   db: {
     postgres: {
       type: 'postgres',
-      synchronize: false,
-      logging: process.env.NODE_ENV !== 'develop' ? true : false,
+      synchronize: true,
+      logging: process.env.NODE_ENV === 'develop' ? true : false,
       host: process.env.DB_HOST || '127.0.0.1',
       port: process.env.DB_PORT || 5432,
       username: process.env.DB_USER || 'username',
       password: process.env.DB_PWD || 'password',
       database: process.env.DB_NAME || 'db_name',
+      ssl: process.env.NODE_ENV === 'develop' ? null : true,
       extra: {
-        connectionLimit: 10,
+        ssl: {
+          rejectUnauthorized: process.env.NODE_ENV === 'develop' ? true : false,
+          ca: process.env.NODE_ENV === 'develop' ? null : process.env.DB_CA,
+        },
       },
       autoLoadEntities: true,
     },
@@ -33,12 +37,12 @@ export const config = {
     // },
   },
   cache: {
+    username: process.env.REDIS_USER || 'username',
     password: process.env.REDIS_PWD || 'password',
     socket: {
       port: process.env.REDIS_PORT || 6379,
       host: process.env.REDIS_HOST || '127.0.0.1',
     },
-    database: process.env.REDIS_DB || 2,
   },
   amqp: {
     user: process.env.RMQ_USER || 'admin',

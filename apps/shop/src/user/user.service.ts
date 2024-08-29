@@ -5,6 +5,7 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Not } from 'typeorm';
 import { Address, User } from '@lib/core/databases/postgres';
 import { AddressDto, ChangePasswordDto, UserProfileDto } from './user.dto';
+import { IPaginationResponse } from '@lib/common/interfaces';
 
 @Injectable()
 export class UserService extends BaseRepository {
@@ -50,7 +51,7 @@ export class UserService extends BaseRepository {
       throw new ConflictException(`Số điện thoại ${dto.phone} đã được đăng kí`);
   }
 
-  async changePassword(dto: ChangePasswordDto, id: string) {
+  async changePassword(dto: ChangePasswordDto, id: string): Promise<boolean> {
     const password = this.cryptoService.computeSHA1OfMD5(dto.newPassword);
 
     return await this.update(
@@ -61,7 +62,7 @@ export class UserService extends BaseRepository {
     );
   }
 
-  async listAddress(user: string) {
+  async listAddress(user: string): Promise<IPaginationResponse<Address>> {
     const [results, count] = await this.dataSourcePostgres
       .createQueryBuilder(Address, 'location')
       .where('location.user = :user', { user })
@@ -76,7 +77,7 @@ export class UserService extends BaseRepository {
     return { results, count };
   }
 
-  async createAddress(dto: AddressDto, user: string) {
+  async createAddress(dto: AddressDto, user: string): Promise<boolean> {
     Object.assign(dto, { user: { id: user } });
 
     const address = this.createInstance(this.dataSourcePostgres, Address, dto);
@@ -86,23 +87,19 @@ export class UserService extends BaseRepository {
     return true;
   }
 
-  async updateAddress(dto: AddressDto, user: string) {
-    await this.update(
+  async updateAddress(dto: AddressDto, user: string): Promise<boolean> {
+    return await this.update(
       this.dataSourcePostgres,
       Address,
       { user: { id: user } },
       dto,
     );
-
-    return true;
   }
 
-  async deleteAddress(id: string, user: string) {
-    await this.softDelete(this.dataSourcePostgres, Address, {
+  async deleteAddress(id: string, user: string): Promise<boolean> {
+    return await this.softDelete(this.dataSourcePostgres, Address, {
       id,
       user: { id: user },
     });
-
-    return true;
   }
 }
