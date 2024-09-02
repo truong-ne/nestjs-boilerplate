@@ -16,19 +16,19 @@ export class Discount extends BaseSchemaEntity {
   @Column({ length: 20, nullable: false, unique: true })
   code: string;
 
-  @Column({ type: 'integer', nullable: false })
+  @Column({ type: 'int4', nullable: false })
   value: number;
 
   @Column({ type: 'enum', enum: EDiscountUnit, default: EDiscountUnit.VND })
   unit: EDiscountUnit;
 
-  @Column({ type: 'integer', nullable: true })
+  @Column({ type: 'int4', nullable: true })
   quantity: number;
 
   @Column({ type: 'enum', enum: EDiscountType, default: EDiscountType.Limit })
   type: EDiscountType;
 
-  @Column({ type: 'integer', nullable: true })
+  @Column({ type: 'int4', nullable: true })
   point: number;
 
   @Column({

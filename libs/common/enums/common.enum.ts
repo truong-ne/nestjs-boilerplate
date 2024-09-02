@@ -18,8 +18,10 @@ export enum DateDigit {
 }
 
 export enum Sort {
-  Asc = 'ASC',
-  Desc = 'DESC',
+  asc = 'asc',
+  desc = 'desc',
+  ASC = 'ASC',
+  DESC = 'DESC'
 }
 
 export enum ETimeFilter {

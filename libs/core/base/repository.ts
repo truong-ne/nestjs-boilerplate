@@ -150,7 +150,7 @@ export class BaseRepository implements IBaseRepositoryImpl {
         const {
           projection = null,
           query = null,
-          order = { createdAt: Sort.Desc },
+          order = { createdAt: Sort.DESC },
         } = schemaLessOptions || {};
         [records, count] = await Promise.all([
           model.find(where, projection, {

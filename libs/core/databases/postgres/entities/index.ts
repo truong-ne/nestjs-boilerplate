@@ -5,3 +5,7 @@ export * from './discount.entity';
 export * from './user-discounts.entity';
 export * from './bill.entity';
 export * from './category.entity';
+export * from './product.entity';
+export * from './feedback.entity';
+export * from './style.entity';
+export * from './order-item.entity'

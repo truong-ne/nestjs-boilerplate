@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  OneToMany,
   PrimaryColumn,
   PrimaryGeneratedColumn,
   Tree,
@@ -8,6 +9,7 @@ import {
   TreeParent,
 } from 'typeorm';
 import { BaseSchemaEntity } from '../../base-entity';
+import { Product } from './product.entity';
 
 @Entity({ name: 'categories' })
 @Tree('materialized-path')
@@ -26,4 +28,7 @@ export class Category extends BaseSchemaEntity {
 
   @TreeParent({ onDelete: 'CASCADE' })
   parent: Category;
+
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 }

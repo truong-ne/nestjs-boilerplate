@@ -50,6 +50,6 @@ async function bootstrap() {
 
   await app.listen(4444);
 
-  console.info(`Admin-Gateway is running on:`, 4444);
+  console.info(`Shop-Gateway is running on:`, 4444);
 }
 bootstrap();

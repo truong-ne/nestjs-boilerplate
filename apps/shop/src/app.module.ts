@@ -9,12 +9,14 @@ import { CacheModule } from '@lib/modules/caching';
 import { UserModule } from './user';
 import { DiscountModule } from './discount';
 import { CategoryModule } from './category';
+import { ProductModule } from './product/product.module';
 
 const modules = [
   AuthModule,
   UserModule,
   DiscountModule,
   CategoryModule,
+  ProductModule,
   LoggerModule,
   CacheModule,
 ];

@@ -55,6 +55,14 @@ export class DiscountService extends BaseRepository {
     return { results, count };
   }
 
+  async detailDiscount(id: string): Promise<Discount> {
+    const discount = this.getOne(this.dataSourcePostgres, Discount, {
+      where: { id },
+    });
+
+    return discount;
+  }
+
   async createDiscount(dto: DiscountDto): Promise<boolean> {
     await this.existedDiscount(dto.code);
 

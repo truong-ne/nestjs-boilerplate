@@ -1,3 +1,4 @@
+import { PaginateDto } from '@lib/common/dto';
 import {
   EDiscountStatus,
   EDiscountType,
@@ -53,7 +54,7 @@ export class DiscountDto {
   expiredAt: Date;
 }
 
-export class DiscountQuery {
+export class DiscountQuery extends PaginateDto {
   @Type(() => String)
   @IsOptional()
   @ApiProperty({ example: 'khai trương', required: false })
@@ -85,14 +86,4 @@ export class DiscountQuery {
     enum: EDiscountStatus,
   })
   status: EDiscountStatus;
-
-  @Type(() => Number)
-  @Min(1)
-  @ApiProperty({ example: 1, required: true })
-  page: number;
-
-  @Type(() => Number)
-  @Min(5)
-  @ApiProperty({ example: 5, required: true })
-  size: number;
 }

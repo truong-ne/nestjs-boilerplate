@@ -30,6 +30,15 @@ export class DiscountController {
     return await this.discountService.listDiscount(query);
   }
 
+  @ApiOperation({ summary: 'Admin List Discount' })
+  @UseGuards(UserAuthGuard)
+  @Roles(ERole.Admin)
+  @ApiBearerAuth()
+  @Get(':id')
+  async detailDiscount(@Param('id') id: string) {
+    return await this.discountService.detailDiscount(id);
+  }
+
   @ApiOperation({ summary: 'Admin Create Discount' })
   @UseGuards(UserAuthGuard)
   @Roles(ERole.Admin)

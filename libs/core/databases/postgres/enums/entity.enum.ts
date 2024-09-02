@@ -47,3 +47,17 @@ export enum EDeliveryUnit {
   Grab = 'Grab',
   Lalamove = 'Lalamove',
 }
+
+export enum EProductLabel {
+  OutOfStock = 'OutOfStock',
+  BestSeller = 'BestSeller',
+  Promotion = 'Promotion',
+  New = 'New',
+}
+
+export enum EStyle {
+  Color = 'Color',
+  Brand = 'Brand',
+  Flavor = 'Flavor',
+  Other = 'Other',
+}

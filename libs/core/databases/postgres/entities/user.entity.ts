@@ -5,6 +5,7 @@ import { Session } from './session.entity';
 import { Address } from './address.entity';
 import { UserDiscount } from './user-discounts.entity';
 import { Bill } from './bill.entity';
+import { Feedback } from './feedback.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseSchemaEntity {
@@ -32,7 +33,7 @@ export class User extends BaseSchemaEntity {
   @Column({ length: 10, nullable: true })
   birthday: string;
 
-  @Column({ type: 'integer', default: 0 })
+  @Column({ type: 'int4', default: 0 })
   point: number;
 
   @Column({ type: 'boolean', default: false })
@@ -49,4 +50,7 @@ export class User extends BaseSchemaEntity {
 
   @OneToMany(() => Bill, (bill) => bill.user)
   bills: Bill[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.user)
+  feedbacks: Feedback[];
 }
