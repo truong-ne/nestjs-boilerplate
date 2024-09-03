@@ -10,6 +10,7 @@ import { UserModule } from './user';
 import { DiscountModule } from './discount';
 import { CategoryModule } from './category';
 import { ProductModule } from './product/product.module';
+import { BillModule } from './bill/bill.module';
 
 const modules = [
   AuthModule,
@@ -35,6 +36,7 @@ const modules = [
       },
     }),
     ...modules,
+    BillModule,
   ],
 })
 export class AppModule {}

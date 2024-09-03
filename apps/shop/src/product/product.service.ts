@@ -92,7 +92,7 @@ export class ProductService extends BaseRepository {
       category: { id: category },
     });
 
-    const createProduct = this.createInstance(
+    const productInstance = this.createInstance(
       this.dataSourcePostgres,
       Product,
       payload,
@@ -103,15 +103,15 @@ export class ProductService extends BaseRepository {
     await queryRunner.startTransaction();
 
     try {
-      const product = await queryRunner.manager.save(createProduct);
+      const product = await queryRunner.manager.save(Product, productInstance);
 
       for (const style of styles) {
-        const instance = this.createInstance(
+        const styleInstance = this.createInstance(
           this.dataSourcePostgres,
           Style,
           Object.assign(style, { product }),
         );
-        await queryRunner.manager.save(instance);
+        await queryRunner.manager.save(Style, styleInstance);
       }
 
       await queryRunner.commitTransaction();

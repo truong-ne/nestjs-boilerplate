@@ -116,10 +116,12 @@ export class UpdateProductDto extends ProductDto {
 }
 
 export class ProductQuery extends PaginateDto {
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty({ example: 300000 })
   startPrice: number;
 
+  @Type(() => Number)
   @IsNumber()
   @ApiProperty({ example: 350000 })
   endPrice: number;
