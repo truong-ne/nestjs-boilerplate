@@ -99,7 +99,7 @@ export class BillService extends BaseRepository {
         { status: EDiscountStatus.OutOfStock },
       );
 
-    for (const orderItem of orderItems) {
+    const promises = orderItems.map(async (orderItem) => {
       const { style, ...payload } = orderItem;
 
       const styleInstance = await this.getOne(this.dataSourcePostgres, Style, {
@@ -112,7 +112,9 @@ export class BillService extends BaseRepository {
         throw new BadRequestException(
           `Sản phẩm ${styleInstance.product.name} - ${styleInstance.label} đã hết hàng`,
         );
-    }
+    });
+
+    await Promise.all(promises);
 
     const queryRunner = this.dataSourcePostgres.createQueryRunner();
     await queryRunner.connect();
@@ -131,7 +133,7 @@ export class BillService extends BaseRepository {
           .where('code = :code', { code })
           .execute();
 
-      for (const orderItem of orderItems) {
+      const promises = orderItems.map(async (orderItem) => {
         const { style, ...payload } = orderItem;
         Object.assign(payload, { style: { id: style }, bill });
 
@@ -153,7 +155,11 @@ export class BillService extends BaseRepository {
         );
 
         await queryRunner.manager.save(OrderItem, orderItemInstance, {});
-      }
+
+        return orderItem;
+      });
+
+      await Promise.all(promises);
 
       await queryRunner.commitTransaction();
     } catch (error) {

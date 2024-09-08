@@ -5,7 +5,7 @@ import {
   IQueryProduct,
   OrderFields,
 } from '@lib/common/interfaces';
-import { Product } from '@lib/core/databases/postgres';
+import { Category, Product } from '@lib/core/databases/postgres';
 import {
   EProductLabel,
   EStyle,
@@ -135,6 +135,10 @@ export class QueryFieldsProduct implements IQueryFieldProduct {
   @ApiProperty({ required: false, enum: EProductLabel })
   @IsOptional()
   label: EProductLabel;
+
+  @ApiProperty({ required: false })
+  @IsOptional()
+  categoryId: string;
 }
 
 export class OrderFieldsProduct implements OrderFields<Product> {

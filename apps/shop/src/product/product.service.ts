@@ -43,7 +43,7 @@ export class ProductService extends BaseRepository {
   ): Promise<IPaginationResponse<Product>> {
     const { page, size, startPrice, endPrice } = query;
     const { orderFields, queryFields } = dto;
-    const { search, label } = queryFields;
+    const { search, label, categoryId } = queryFields;
 
     const where: FindOptionsWhere<Product> = {
       price: Between(startPrice, endPrice),
@@ -51,6 +51,7 @@ export class ProductService extends BaseRepository {
 
     if (search) Object.assign(where, { name: ILike(`%${search}%`) });
     if (label) Object.assign(where, { label });
+    if (categoryId) Object.assign(where, { category: { id: categoryId } });
 
     const order: FindOptionsOrder<Product> = {};
 
@@ -70,7 +71,12 @@ export class ProductService extends BaseRepository {
         page,
         size,
       },
-      { where, order },
+      {
+        where,
+        order,
+        relations: ['category'],
+        select: { category: { id: true, label: true, slug: true } },
+      },
     );
 
     return results;
@@ -79,7 +85,8 @@ export class ProductService extends BaseRepository {
   async detailProduct(id: string) {
     const product = await this.getOne(this.dataSourcePostgres, Product, {
       where: { id },
-      relations: ['styles'],
+      relations: ['styles', 'category'],
+      select: { category: { id: true, label: true, slug: true } },
     });
 
     return product;
@@ -105,14 +112,18 @@ export class ProductService extends BaseRepository {
     try {
       const product = await queryRunner.manager.save(Product, productInstance);
 
-      for (const style of styles) {
+      const promises = styles.map(async (style) => {
         const styleInstance = this.createInstance(
           this.dataSourcePostgres,
           Style,
           Object.assign(style, { product }),
         );
         await queryRunner.manager.save(Style, styleInstance);
-      }
+
+        return style;
+      });
+
+      await Promise.all(promises);
 
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -134,11 +145,15 @@ export class ProductService extends BaseRepository {
     try {
       await queryRunner.manager.update(Product, { id }, payload);
 
-      for (const style of styles) {
+      const promises = styles.map(async (style) => {
         const { id, ...payload } = style;
 
         await queryRunner.manager.update(Style, { id }, payload);
-      }
+
+        return style;
+      });
+
+      await Promise.all(promises);
 
       await queryRunner.commitTransaction();
     } catch (error) {
